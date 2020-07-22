@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, logout_user
 from questionnaire import Questionnaire
-from validation import RegistrationError, LoginError
+from validation import RegistrationError, LoginError, PayloadError
 import os
 
 app = Flask(__name__)
@@ -23,17 +23,10 @@ def hello_world():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Registers and logs-in a new user."""
+    """Register and login new user."""
     try:
         user = User(**request.json)
         user.register()
-    except ValueError as e:
-        return str(e), 422
-    except TypeError:
-        return '''Invalid registration: Must be of format:
-                    "user_name": String
-                    "password": String
-                ''', 422
     except RegistrationError as e:
         return str(e), 422
     return 'Successfully registered and logged in', 200
@@ -41,22 +34,19 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login existing user."""
     if current_user.is_authenticated:
         return 'Already logged in.', 200
     try:
         User.login(**request.json)
-    except (TypeError, ValueError):
-        return '''Invalid data. Must be of format:
-                    username: string,
-                    password: string
-                ''', 422
     except LoginError as e:
-        return 'User is not registered.', 422
+        return str(e), 422
     return 'Successfully logged in.', 200
 
 
 @app.route('/logout')
 def logout():
+    """Logout any user."""
     logout_user()
     return 'Logged out.', 200
 
@@ -66,18 +56,8 @@ def recommendation_route():
     """Returns a insurance recommendation for the posted data."""
     try:
         questionnaire = Questionnaire(**request.json)
-    except ValueError as e:
+    except PayloadError as e:
         return str(e), 422
-    except TypeError as e:
-        print(e)
-        return '''Invalid data. Must be of format:
-                  "first_name": String,
-                  "address": String,
-                  "occupation": String(OneOf('Employed', 'Student', 'Self-Employed')),
-                  "email_address": String,
-                  "children": Boolean,
-                  "num_children": Optional(int)
-                ''', 422
     return questionnaire.recommendation(), 200
 
 

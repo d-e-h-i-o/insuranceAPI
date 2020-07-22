@@ -4,6 +4,18 @@ from abc import ABC, abstractmethod
 from email_validator import validate_email, EmailNotValidError
 
 
+class RegistrationError(Exception):
+    pass
+
+
+class LoginError(Exception):
+    pass
+
+
+class PayloadError(Exception):
+    pass
+
+
 class Validator(ABC):
     """Base class for validation. Sets private attribute and validates it."""
 
@@ -84,11 +96,3 @@ class Integer(Validator):
             raise ValueError(f'{value} is too small.  Must be at least {self.minvalue}.')
         if self.maxvalue is not None and value > self.maxvalue:
             raise ValueError(f'{value} is too big.  Must be no more than {self.maxvalue}.')
-
-
-class RegistrationError(Exception):
-    pass
-
-
-class LoginError(Exception):
-    pass
