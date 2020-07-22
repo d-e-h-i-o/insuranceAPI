@@ -8,8 +8,8 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'this-really-needs-to-be-changed'
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-
+    #DATABASE = os.environ['DATABASE_URL']
+    DATABASE = 'postgresql:///insuranceapi_dev'
 
 class ProductionConfig(Config):
     DEBUG = False

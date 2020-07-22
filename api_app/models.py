@@ -1,26 +1,28 @@
-from app import db, login
+#from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
-from validation import String, RegistrationError, LoginError, Email, PayloadError, validate_password
+from api_app.validation import RegistrationError, LoginError, Email, PayloadError, validate_password
+from api_app.validation import String as StringValidator
 from unicodedata import normalize
 from flask_login import UserMixin, login_user, current_user
+from sqlalchemy import Column, Integer, String
+from api_app.db import Base, db_session
+
+#@login.user_loader
+#def load_user(id):
+#    """Helper function for flask_login."""
+#    return User.query.get(int(id))
 
 
-@login.user_loader
-def load_user(id):
-    """Helper function for flask_login."""
-    return User.query.get(int(id))
-
-
-class User(UserMixin, db.Model):
+class User(UserMixin, Base):
     """Represents a user, includes extensive validation at initialisation."""
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(64), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
+    id = Column(Integer, primary_key=True)
+    username = Column(String(64), index=True, unique=True)
+    email = Column(String(64), index=True, unique=True)
+    password_hash = Column(String(128))
 
-    validated_username = String(minsize=1, maxsize=64)
+    validated_username = StringValidator(minsize=1, maxsize=64)
     validated_email = Email()
 
     def __init__(self, **kwargs):
@@ -35,8 +37,8 @@ class User(UserMixin, db.Model):
         """
 
         '1) is user already logged in?'
-        if current_user.is_authenticated:
-            raise RegistrationError("Already authenticated.")
+        #if current_user.is_authenticated:
+            #raise RegistrationError("Already authenticated.")
 
         '2) parameter validation:'
         self.validate_payload(**kwargs)
@@ -63,6 +65,13 @@ class User(UserMixin, db.Model):
         Validates the payload. Not as elegant as in questionnaire, but I do not know how to use both db.Column
         and the validations classes.
         """
+
+        if not kwargs:
+            raise PayloadError('''Invalid data. Must be of type application/json and contain the following fields:
+                                username: string,
+                                email: string,
+                                password: string
+                                ''')
         try:
             self.validated_username = kwargs.get('username', None)
             self.validated_email = kwargs.get('email', None)
@@ -72,30 +81,36 @@ class User(UserMixin, db.Model):
         except Exception as e:
             print(e)
             raise PayloadError('''Invalid registration: Must be of format:
-                                       "user_name": String,
-                                       "password": String
-                                    ''')
+                               "user_name": String,
+                               "password": String
+                                ''')
 
     def validate_registration(self):
         """Checks if the username or the email already exists."""
         try:
+            session = db_session()
+            if session.query(User).filter_by(username=self.username).first() is not None:
+                raise RegistrationError("Username is already taken.")
+            if session.query(User).filter_by(email=self.email).first() is not None:
+                raise RegistrationError("Email is already registered.")
+            '''
             if User.query.filter_by(username=self.username).first() is not None:
                 raise RegistrationError("Username is already taken.")
             if User.query.filter_by(email=self.email).first() is not None:
                 raise RegistrationError("Email is already registered.")
+            '''
         except ValueError as e:
             raise RegistrationError(str(e))
 
     def register(self):
         """Save the user instance in the database and log the user in."""
-        db.session.add(self)
-        db.session.commit()
-        login_user(self)
+        db_session.add(self)
+        db_session.commit()
 
 
 class Login:
     """Logs-in a registered user."""
-    username = String(minsize=1, maxsize=64)
+    username = StringValidator(minsize=1, maxsize=64)
 
     def __init__(self, **kwargs):
         """
@@ -106,6 +121,11 @@ class Login:
         """
 
         '1) validate login payload'
+        if not kwargs:
+            raise PayloadError('''Invalid data. Must be of type "application/json" and contain the following fields:
+                                "user_name": String
+                                "password": String
+                                ''')
         try:
             self.username = kwargs.get('username')
             validate_password(kwargs.get('password', None))
@@ -124,4 +144,3 @@ class Login:
             raise LoginError('User is not registered.')
         if not user.check_password(password):
             raise LoginError('Wrong password.')
-        load_user(user)

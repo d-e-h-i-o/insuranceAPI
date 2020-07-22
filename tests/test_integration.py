@@ -1,25 +1,27 @@
-import os
-import tempfile
-from random import randint
 import pytest
-
-from app import app, db
+import os
+from api_app import create_app
+from api_app.db import init_db, init_engine
+from random import randint
+from config import Config
+from api_app.db import Base
+from api_app.models import User
 
 
 @pytest.fixture()
 def client():
-    app.config['TESTING'] = True
+
     db_name = f'test_{randint(0, 999999)}'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql:///{db_name}'
-    os.system(f"psql -c 'create database {db_name};'")
+    #os.system(f"psql -c 'create database {db_name};'")
+    db_path = f'postgresql:///insuranceapi_test'
+    app = create_app({"TESTING": True, "DATABASE": db_path})
 
     with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
         yield client
+    from api_app.db import engine
+    User.__table__.drop(engine)
+    #os.system(f"psql -c 'drop database {db_name};'")
 
-    db.
-    os.system(f"psql -c 'drop database {db_name};'")
 
 
 def test_base(client):
@@ -31,4 +33,4 @@ def test_base(client):
     rv2 = client.post('/register', json=registration)
     print('rv:', rv2.data)
     assert b'Successfully registered and logged in.' == rv1.data
-    assert b'Already authenticated.' == rv2.data
+    assert b'Username is already taken.' == rv2.data

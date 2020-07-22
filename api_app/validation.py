@@ -1,8 +1,8 @@
 """Module of reusable and extendable data validators. Adapted from Raymond Hettingers modern Python course."""
 
 from abc import ABC, abstractmethod
-from email_validator import validate_email, EmailNotValidError
-
+import re
+from flask import request
 
 class RegistrationError(Exception):
     pass
@@ -84,10 +84,8 @@ class Email(Validator):
         if not isinstance(value, str):
             raise ValueError(f'Expected a str for "{self.private_name.split("_")[-1]}".')
         print(type(value))
-        try:
-            validate_email(value)
-        except EmailNotValidError as e:
-            raise RegistrationError(str(e))
+        if not re.match(r'[^@]+@[^@]+\.[^@]+',value):
+            raise RegistrationError('Please provide valid email address.')
 
 
 class Integer(Validator):

@@ -1,4 +1,4 @@
-from validation import OneOf, String, Boolean, Email, Integer, PayloadError
+from api_app.validation import OneOf, String, Boolean, Email, Integer, PayloadError
 from collections import defaultdict
 
 
@@ -13,6 +13,17 @@ class Questionnaire:
     insurance = defaultdict(list)
 
     def __init__(self, **kwargs):
+        """Validates and initialises the questionnaire data."""
+
+        if not kwargs:
+            raise PayloadError('''Invalid data. Must be of type application/json and contain the following fields:
+                  "first_name": String,
+                  "address": String,
+                  "occupation": String(OneOf('Employed', 'Student', 'Self-Employed')),
+                  "email_address": String,
+                  "children": Boolean,
+                  "num_children": Optional(int)
+                ''')
         try:
             self.first_name = kwargs.get('first_name', None)
             self.address = kwargs.get('address', None)
