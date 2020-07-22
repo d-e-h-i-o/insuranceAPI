@@ -59,10 +59,14 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def validate_payload(self, **kwargs):
+        """
+        Validates the payload. Not as elegant as in questionnaire, but I do not know how to use both db.Column
+        and the validations classes.
+        """
         try:
-            self.validated_username = kwargs['username'] if 'username' in kwargs else None
-            self.validated_email = kwargs['email'] if 'email' in kwargs else None
-            validate_password(kwargs['password'] if 'password' in kwargs else None)
+            self.validated_username = kwargs.get('username', None)
+            self.validated_email = kwargs.get('email', None)
+            validate_password(kwargs.get('password', None))
         except ValueError as e:
             raise PayloadError(str(e))
         except Exception as e:
@@ -71,7 +75,9 @@ class User(UserMixin, db.Model):
                                        "user_name": String,
                                        "password": String
                                     ''')
+
     def validate_registration(self):
+        """Checks if the username or the email already exists."""
         try:
             if User.query.filter_by(username=self.username).first() is not None:
                 raise RegistrationError("Username is already taken.")
@@ -79,7 +85,6 @@ class User(UserMixin, db.Model):
                 raise RegistrationError("Email is already registered.")
         except ValueError as e:
             raise RegistrationError(str(e))
-
 
     def register(self):
         """Save the user instance in the database and log the user in."""
@@ -93,7 +98,8 @@ class Login:
     username = String(minsize=1, maxsize=64)
 
     def __init__(self, **kwargs):
-        """Login object
+        """
+        Login object
             1) validates login payload
             2) checks if user exists
             3) checks password
@@ -101,8 +107,8 @@ class Login:
 
         '1) validate login payload'
         try:
-            self.username = kwargs['username'] if 'username' in kwargs else None
-            validate_password(kwargs['password'] if 'password' in kwargs else None)
+            self.username = kwargs.get('username')
+            validate_password(kwargs.get('password', None))
         except ValueError as e:
             raise PayloadError(str(e))
 

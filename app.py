@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 
-from models import User
+from models import User, Login
 
 
 @app.route('/')
@@ -29,6 +29,8 @@ def register():
         user.register()
     except (PayloadError, RegistrationError) as e:
         return str(e), 422
+    except TypeError:
+        return 'Error', 422
     return 'Successfully registered and logged in.', 200
 
 
@@ -38,7 +40,7 @@ def login():
     if current_user.is_authenticated:
         return 'Already logged in.', 200
     try:
-        User.login(**request.json)
+        Login(**request.json)
     except (PayloadError, LoginError) as e:
         return str(e), 422
     return 'Successfully logged in.', 200

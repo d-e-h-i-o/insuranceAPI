@@ -3,6 +3,7 @@ from collections import defaultdict
 
 
 class Questionnaire:
+    """Validates and saves the payload and gives a insurance validation."""
     first_name = String(minsize=1, maxsize=64)
     address = String(minsize=1, maxsize=64)
     occupation = OneOf('Employed', 'Student', 'Self-Employed')
@@ -13,12 +14,12 @@ class Questionnaire:
 
     def __init__(self, **kwargs):
         try:
-            self.first_name = kwargs['first_name'] if 'first_name' in kwargs else None
-            self.address = kwargs['address'] if 'first_name' in kwargs else None
-            self.occupation = kwargs['occupation'] if 'first_name' in kwargs else None
-            self.email_address = kwargs['email_address'] if 'first_name' in kwargs else None
-            self.children = kwargs['children'] if 'first_name' in kwargs else None
-            self.num_children = kwargs['num_children'] if 'first_name' in kwargs else 0
+            self.first_name = kwargs.get('first_name', None)
+            self.address = kwargs.get('address', None)
+            self.occupation = kwargs.get('occupation', None)
+            self.email_address = kwargs.get('email_address', None)
+            self.children = kwargs.get('children', None)
+            self.num_children = kwargs.get('num_children', 0)
         except ValueError as e:
             raise PayloadError(str(e))
 
