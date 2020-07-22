@@ -4,9 +4,13 @@ from abc import ABC, abstractmethod
 import re
 from flask import jsonify
 
+
 class CustomError(Exception):
+
+    @property
     def json(self):
-        return jsonify({'error': self.args[0]})
+        return jsonify({'error': ' '.join([line.strip() for line in self.args[0].splitlines()])})
+
 
 class RegistrationError(CustomError):
     pass
@@ -46,7 +50,7 @@ class OneOf(Validator):
 
     def validate(self, value):
         if value not in self.options:
-            raise ValueError(f'{value!r} not a valid option.  should be one of: {self.options}')
+            raise ValueError(f"{value!r} not a valid option.  should be one of: {self.options}")
 
 
 class String(Validator):
@@ -59,15 +63,15 @@ class String(Validator):
 
     def validate(self, value):
         if value is None:
-            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
+            raise ValueError(f"Field '{self.private_name[1:]}' is missing.")
         if not isinstance(value, str):
-            raise ValueError(f'Expected a str for "{self.private_name.split("_")[-1]}".')
+            raise ValueError(f"Expected a str for '{self.private_name[1:]}'.")
         if len(value) < self.minsize:
-            raise ValueError(f'String is too short, must be at least {self.minsize} long')
+            raise ValueError(f"String is too short, must be at least {self.minsize} long")
         if self.maxsize is not None and len(value) > self.maxsize:
-            raise ValueError(f'String is too long, must be no bigger than {self.maxsize} long')
+            raise ValueError(f"String is too long, must be no bigger than {self.maxsize} long")
         if self.predicate is not None and not self.predicate(value):
-            raise ValueError(f'Expected {value} to be true for {self.predicate !r}')
+            raise ValueError(f"Expected {value} to be true for {self.predicate !r}")
 
 
 class Boolean(Validator):
@@ -75,21 +79,20 @@ class Boolean(Validator):
 
     def validate(self, value):
         if value is None:
-            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
+            raise ValueError(f"Field '{self.private_name[1:]}' is missing.")
         if not isinstance(value, bool):
-            raise ValueError(f'Expected a boolean for "{self.private_name.split("_")[-1]}".')
+            raise ValueError(f"Expected a boolean for '{self.private_name[1:]}'.")
 
 
 class Email(Validator):
 
     def validate(self, value):
         if value is None:
-            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
+            raise ValueError(f"Field '{self.private_name[1:]}' is missing.")
         if not isinstance(value, str):
-            raise ValueError(f'Expected a str for "{self.private_name.split("_")[-1]}".')
-        print(type(value))
-        if not re.match(r'[^@]+@[^@]+\.[^@]+',value):
-            raise RegistrationError('Please provide valid email address.')
+            raise ValueError(f"Expected a str for '{self.private_name[1:]}'.")
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+            raise RegistrationError("Please provide valid email address.")
 
 
 class Integer(Validator):
@@ -100,19 +103,19 @@ class Integer(Validator):
 
     def validate(self, value):
         if value is None:
-            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
+            raise ValueError(f"Field '{self.private_name.split('_')[-1]}' is missing.")
         if not isinstance(value, int):
-            raise TypeError(f'Expected an int for "{self.private_name.split("_")[-1]}".')
+            raise TypeError(f"Expected an int for '{self.private_name[1:]}'.")
         if self.minvalue is not None and value < self.minvalue:
-            raise ValueError(f'{value} is too small.  Must be at least {self.minvalue}.')
+            raise ValueError(f"{value} is too small.  Must be at least {self.minvalue}.")
         if self.maxvalue is not None and value > self.maxvalue:
-            raise ValueError(f'{value} is too big.  Must be no more than {self.maxvalue}.')
+            raise ValueError(f"{value} is too big.  Must be no more than {self.maxvalue}.")
 
 
 def validate_password(password):
     if password is None:
-        raise PayloadError('Field "Password" is missing.')
+        raise PayloadError("Field 'password' is missing.")
     if not isinstance(password, str):
-        raise PayloadError('Password must be a string.')
+        raise PayloadError("Password must be a string.")
     if len(password) < 6:
-        raise PayloadError('Password must be at least 6 characters long.')
+        raise PayloadError("Password must be at least 6 characters long.")

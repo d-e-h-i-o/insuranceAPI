@@ -1,4 +1,4 @@
-from flask import Flask, current_app, jsonify
+from flask import Flask, current_app, jsonify, Response
 from api_app.db import init_db, init_engine, db_session
 from api_app.validation import RegistrationError, LoginError, PayloadError
 from flask_login import LoginManager, login_manager
@@ -45,7 +45,7 @@ def login_handler(app):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        return jsonify({'Error': 'Not authorized. Please log in.'})
+        return jsonify({'Error': 'Not authorized. Please log in.'}), 401
 
     @login_manager.user_loader
     def load_user(id):

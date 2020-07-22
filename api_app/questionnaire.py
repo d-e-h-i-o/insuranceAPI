@@ -18,12 +18,12 @@ class Questionnaire:
 
         if not kwargs:
             raise PayloadError('''Invalid data. Must be of type application/json and contain the following fields:
-                  "first_name": String,
-                  "address": String,
-                  "occupation": String(OneOf('Employed', 'Student', 'Self-Employed')),
-                  "email_address": String,
-                  "children": Boolean,
-                  "num_children": Optional(int)
+                  'first_name': String,
+                  'address': String,
+                  'occupation': String(OneOf('Employed', 'Student', 'Self-Employed')),
+                  'email_address': String,
+                  'children': Boolean,
+                  'num_children': Optional(int)
                 ''')
         try:
             self.first_name = kwargs.get('first_name', None)

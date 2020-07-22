@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from api_app.validation import String, RegistrationError, LoginError, Email, PayloadError, validate_password
 from api_app.models import User, Login
 from api_app.questionnaire import Questionnaire
@@ -35,7 +35,7 @@ def register_routes(app):
     def logout():
         """Logout any user."""
         logout_user()
-        return 'Logged out.', 200
+        return jsonify('Logged out.'), 200
 
     @app.route('/recommendation', methods=['POST'])
     @login_required

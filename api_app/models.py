@@ -18,8 +18,8 @@ class User(UserMixin, Base):
     email = Column(String(64), index=True, unique=True)
     password_hash = Column(String(128))
 
-    validated_username = StringValidator(minsize=1, maxsize=64)
-    validated_email = Email()
+    _username = StringValidator(minsize=1, maxsize=64)
+    _email = Email()
 
     def __init__(self, **kwargs):
         """ Initialises and validates new user.
@@ -40,8 +40,8 @@ class User(UserMixin, Base):
         self.validate_payload(**kwargs)
 
         'Init:'
-        self.username = normalize('NFC', self.validated_username)
-        self.email = self.validated_email
+        self.username = normalize('NFC', self._username)
+        self.email = self._email
         self.set_password(kwargs['password'])
 
         '3) registration validation:'
@@ -69,15 +69,15 @@ class User(UserMixin, Base):
                                 password: string
                                 ''')
         try:
-            self.validated_username = kwargs.get('username', None)
-            self.validated_email = kwargs.get('email', None)
+            self._username = kwargs.get('username', None)
+            self._email = kwargs.get('email', None)
             validate_password(kwargs.get('password', None))
-        except ValueError as e:
+        except (ValueError, PayloadError) as e:
             raise PayloadError(str(e))
         except Exception as e:
             print(e)
             raise PayloadError('''Invalid registration: Must be of format:
-                               "user_name": String,
+                               "username": String,
                                "password": String
                                 ''')
 
@@ -120,7 +120,7 @@ class Login:
         '1) validate login payload'
         if not kwargs:
             raise PayloadError('''Invalid data. Must be of type "application/json" and contain the following fields:
-                                "user_name": String
+                                "username": String
                                 "password": String
                                 ''')
         try:
