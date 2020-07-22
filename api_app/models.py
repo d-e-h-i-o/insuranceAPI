@@ -7,10 +7,6 @@ from flask_login import UserMixin, login_user, current_user
 from sqlalchemy import Column, Integer, String
 from api_app.db import Base, db_session
 
-#@login.user_loader
-#def load_user(id):
-#    """Helper function for flask_login."""
-#    return User.query.get(int(id))
 
 
 class User(UserMixin, Base):
@@ -106,6 +102,7 @@ class User(UserMixin, Base):
         """Save the user instance in the database and log the user in."""
         db_session.add(self)
         db_session.commit()
+        login_user(self)
 
 
 class Login:
@@ -139,8 +136,9 @@ class Login:
 
     def authenticate(self, password):
         """Helper functions that queries the database for the user and checks the password."""
-        user = User.query.filter_by(username=self.normalised_username).first()
+        user = db_session.query(User).filter_by(username=self.normalised_username).first()
         if user is None:
             raise LoginError('User is not registered.')
         if not user.check_password(password):
             raise LoginError('Wrong password.')
+        login_user(user)

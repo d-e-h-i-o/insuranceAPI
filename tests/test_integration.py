@@ -22,6 +22,22 @@ def client():
     User.__table__.drop(engine)
     #os.system(f"psql -c 'drop database {db_name};'")
 
+class AuthActions(object):
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username="test", password="test"):
+        return self._client.post(
+            "/auth/login", data={"username": username, "password": password}
+        )
+
+    def logout(self):
+        return self._client.get("/auth/logout")
+
+
+@pytest.fixture
+def auth(client):
+    return AuthActions(client)
 
 
 def test_base(client):
@@ -34,3 +50,12 @@ def test_base(client):
     print('rv:', rv2.data)
     assert b'Successfully registered and logged in.' == rv1.data
     assert b'Username is already taken.' == rv2.data
+
+def test_get_recommendation(client, auth):
+    auth.login()
+    registration = {"username": "Niklas35",
+                    "password": "something",
+                    "email": "niklas.dehio63@gmail.com"}
+    rv1 = client.post('/register', json=registration)
+    assert b'Successfully registered and logged in.' == rv1.data
+    auth.login()

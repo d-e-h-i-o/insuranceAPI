@@ -2,17 +2,21 @@
 
 from abc import ABC, abstractmethod
 import re
-from flask import request
+from flask import jsonify
 
-class RegistrationError(Exception):
+class CustomError(Exception):
+    def json(self):
+        return jsonify({'error': self.args[0]})
+
+class RegistrationError(CustomError):
     pass
 
 
-class LoginError(Exception):
+class LoginError(CustomError):
     pass
 
 
-class PayloadError(Exception):
+class PayloadError(CustomError):
     pass
 
 

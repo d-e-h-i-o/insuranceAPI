@@ -1,5 +1,6 @@
 from api_app.validation import OneOf, String, Boolean, Email, Integer, PayloadError
 from collections import defaultdict
+from flask import jsonify
 
 
 class Questionnaire:
@@ -38,4 +39,4 @@ class Questionnaire:
         return f'{self.__class__.__name__}({self.first_name!r}, {self.address!r}, {self.occupation!r})'
 
     def recommendation(self):
-        return 'Health insurance.'
+        return jsonify('Health insurance.')

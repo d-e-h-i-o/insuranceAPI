@@ -1,8 +1,8 @@
-from flask import Flask
-from api_app.db import init_db, init_engine
+from flask import Flask, current_app, jsonify
+from api_app.db import init_db, init_engine, db_session
 from api_app.validation import RegistrationError, LoginError, PayloadError
-from flask_login import LoginManager
-import os
+from flask_login import LoginManager, login_manager
+import jwt
 
 
 def create_app(test_config=None):
@@ -28,6 +28,7 @@ def create_app(test_config=None):
     from api_app.routes import register_routes
 
     app = register_routes(app)
+    app = login_handler(app)
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
@@ -35,5 +36,20 @@ def create_app(test_config=None):
 
     return app
 
-# if __name__ == '__main__':
-#    app.run()
+
+def login_handler(app):
+
+    from api_app.models import User
+
+    login_manager = LoginManager(app)
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return jsonify({'Error': 'Not authorized. Please log in.'})
+
+    @login_manager.user_loader
+    def load_user(id):
+        #session = db_session()
+        return db_session.query(User).get(int(id))
+
+    return app
