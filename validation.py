@@ -54,8 +54,10 @@ class String(Validator):
         self.predicate = predicate
 
     def validate(self, value):
+        if value is None:
+            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
         if not isinstance(value, str):
-            raise ValueError(f'Expected a str for "{self.private_name[1:]}".')
+            raise ValueError(f'Expected a str for "{self.private_name.split("_")[-1]}".')
         if len(value) < self.minsize:
             raise ValueError(f'String is too short, must be at least {self.minsize} long')
         if self.maxsize is not None and len(value) > self.maxsize:
@@ -68,15 +70,20 @@ class Boolean(Validator):
     """Validates if value is a boolean."""
 
     def validate(self, value):
+        if value is None:
+            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
         if not isinstance(value, bool):
-            raise ValueError(f'Expected a boolean for "{self.private_name[1:]}".')
+            raise ValueError(f'Expected a boolean for "{self.private_name.split("_")[-1]}".')
 
 
 class Email(Validator):
 
     def validate(self, value):
+        if value is None:
+            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
         if not isinstance(value, str):
-            raise ValueError(f'Expected a str for "{self.private_name[1:]}".')
+            raise ValueError(f'Expected a str for "{self.private_name.split("_")[-1]}".')
+        print(type(value))
         try:
             validate_email(value)
         except EmailNotValidError as e:
@@ -90,9 +97,20 @@ class Integer(Validator):
         self.maxvalue = maxvalue
 
     def validate(self, value):
+        if value is None:
+            raise ValueError(f'Field "{self.private_name.split("_")[-1]}" is missing.')
         if not isinstance(value, int):
-            raise TypeError(f'Expected an int for "{self.private_name[1:]}".')
+            raise TypeError(f'Expected an int for "{self.private_name.split("_")[-1]}".')
         if self.minvalue is not None and value < self.minvalue:
             raise ValueError(f'{value} is too small.  Must be at least {self.minvalue}.')
         if self.maxvalue is not None and value > self.maxvalue:
             raise ValueError(f'{value} is too big.  Must be no more than {self.maxvalue}.')
+
+
+def validate_password(password):
+    if password is None:
+        raise PayloadError('Field "Password" is missing.')
+    if not isinstance(password, str):
+        raise PayloadError('Password must be a string.')
+    if len(password) < 6:
+        raise PayloadError('Password must be at least 6 characters long.')

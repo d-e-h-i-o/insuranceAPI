@@ -27,9 +27,9 @@ def register():
     try:
         user = User(**request.json)
         user.register()
-    except RegistrationError as e:
+    except (PayloadError, RegistrationError) as e:
         return str(e), 422
-    return 'Successfully registered and logged in', 200
+    return 'Successfully registered and logged in.', 200
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def login():
         return 'Already logged in.', 200
     try:
         User.login(**request.json)
-    except LoginError as e:
+    except (PayloadError, LoginError) as e:
         return str(e), 422
     return 'Successfully logged in.', 200
 

@@ -11,27 +11,16 @@ class Questionnaire:
     num_children = Integer(minvalue=0, maxvalue=25)
     insurance = defaultdict(list)
 
-    def __init__(self, first_name, address, occupation, email_address, children, num_children=0):
+    def __init__(self, **kwargs):
         try:
-            self.first_name = first_name
-            self.address = address
-            self.occupation = occupation
-            self.email_address = email_address
-            self.children = children
-            self.num_children = num_children
+            self.first_name = kwargs['first_name'] if 'first_name' in kwargs else None
+            self.address = kwargs['address'] if 'first_name' in kwargs else None
+            self.occupation = kwargs['occupation'] if 'first_name' in kwargs else None
+            self.email_address = kwargs['email_address'] if 'first_name' in kwargs else None
+            self.children = kwargs['children'] if 'first_name' in kwargs else None
+            self.num_children = kwargs['num_children'] if 'first_name' in kwargs else 0
         except ValueError as e:
-            print(e)
             raise PayloadError(str(e))
-        except TypeError as e:
-            print(e)
-            raise PayloadError('''Invalid data. Must be of format:
-                              "first_name": String,
-                              "address": String,
-                              "occupation": String(OneOf('Employed', 'Student', 'Self-Employed')),
-                              "email_address": String,
-                              "children": Boolean,
-                              "num_children": Optional(int)
-                                ''')
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.first_name!r}, {self.address!r}, {self.occupation!r})'
