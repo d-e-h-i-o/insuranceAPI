@@ -35,8 +35,26 @@ class Questionnaire:
         except ValueError as e:
             raise PayloadError(str(e))
 
+        if self.children is True and self.num_children == 0:
+            raise PayloadError('Please specify the number of children.')
+
     def __repr__(self):
         return f'{self.__class__.__name__}({self.first_name!r}, {self.address!r}, {self.occupation!r})'
 
     def recommendation(self):
-        return jsonify('Health insurance.')
+        """This is our proprietary AI model to generate insurance recommendations. Don't show to investors!"""
+        recommendation = {'needed': ['Personal Liability', 'Health (public)'],
+                          'optional': [],
+                          'not needed': ['Life', 'Car', 'Health (private)']
+                          }
+        if self.num_children > 2:
+            recommendation['needed'].append('Household content')
+        else:
+            recommendation['optional'].append('Household content')
+
+        if self.occupation == 'Employed':
+            recommendation['needed'].append('Job')
+        else:
+            recommendation['not needed'].append('Job')
+
+        return jsonify(recommendation)
