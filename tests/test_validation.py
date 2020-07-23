@@ -82,3 +82,55 @@ def test_validation_recommendation_address(client, auth):
     rv = client.post('/recommendation', json=payload)
     assert rv.status_code == 422
     assert rv.data == b'{"error":"Field \'address\' is missing."}\n'
+
+
+def test_validation_recommendation_occupation(client, auth):
+    auth.register()
+    payload = {
+        "first_name": "Niklas",
+        "address": "Some street",
+        "occupation": "Wall Street Banker",
+        "email_address": "test.mustermann@gmail.com",
+        "children": False
+    }
+    rv = client.post('/recommendation', json=payload)
+    assert rv.status_code == 422
+
+
+def test_validation_recommendation_email(client, auth):
+    auth.register()
+    payload = {
+        "first_name": "Niklas",
+        "address": "Some street",
+        "occupation": "Wall Street Banker",
+        "email_address": "yolo",
+        "children": False
+    }
+    rv = client.post('/recommendation', json=payload)
+    assert rv.status_code == 422
+
+
+def test_validation_recommendation_children(client, auth):
+    auth.register()
+    payload = {
+        "first_name": "Niklas",
+        "address": "Some street",
+        "occupation": "Student",
+        "email_address": "test@testcase.com",
+        "children": True
+    }
+    rv = client.post('/recommendation', json=payload)
+    assert rv.status_code == 422
+
+def test_validation_recommendation_children2(client, auth):
+    auth.register()
+    payload = {
+        "first_name": "Niklas",
+        "address": "Some street",
+        "occupation": "Student",
+        "email_address": "test@testcase.com",
+        "children": True,
+        "children": 0
+    }
+    rv = client.post('/recommendation', json=payload)
+    assert rv.status_code == 422

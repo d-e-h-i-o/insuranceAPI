@@ -92,7 +92,7 @@ class Email(Validator):
         if not isinstance(value, str):
             raise ValueError(f"Expected a str for '{self.private_name[1:]}'.")
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
-            raise RegistrationError("Please provide valid email address.")
+            raise ValueError("Please provide valid email address.")
 
 
 class Integer(Validator):

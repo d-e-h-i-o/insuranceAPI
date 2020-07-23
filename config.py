@@ -7,9 +7,8 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = 'this-really-needs-to-be-changed'
+    SECRET_KEY = os.environ['SECRET_KEY']
     DATABASE = os.environ['DATABASE_URL']
-    #DATABASE = 'postgresql:///insuranceapi_dev'
 
 class ProductionConfig(Config):
     DEBUG = False

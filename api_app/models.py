@@ -8,7 +8,6 @@ from sqlalchemy import Column, Integer, String
 from api_app.db import Base, db_session
 
 
-
 class User(UserMixin, Base):
     """Represents a user, includes extensive validation at initialisation."""
     __tablename__ = 'user'
