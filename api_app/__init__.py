@@ -1,9 +1,8 @@
-from flask import Flask, current_app, jsonify, Response
+from flask import Flask, jsonify
 from api_app.db import init_db, init_engine, db_session
 from api_app.validation import RegistrationError, LoginError, PayloadError
-from flask_login import LoginManager, login_manager
+from flask_login import LoginManager
 import os
-import jwt
 
 
 def create_app(test_config=None):
@@ -16,7 +15,6 @@ def create_app(test_config=None):
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile('../config.py')
-        #app.config['DATABASE'] = 'postgresql:///insuranceapi_dev'
         app.config['DATABASE'] = os.environ['DATABASE_URL']
     else:
         # load the test config if passed in
@@ -51,7 +49,6 @@ def login_handler(app):
 
     @login_manager.user_loader
     def load_user(id):
-        #session = db_session()
         return db_session.query(User).get(int(id))
 
     return app

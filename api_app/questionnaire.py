@@ -1,17 +1,15 @@
 from api_app.validation import OneOf, String, Boolean, Email, Integer, PayloadError
-from collections import defaultdict
 from flask import jsonify
 
 
 class Questionnaire:
-    """Validates and saves the payload and gives a insurance validation."""
+    """Validates and saves the payload and gives a insurance recommendation."""
     first_name = String(minsize=1, maxsize=64)
     address = String(minsize=1, maxsize=64)
     occupation = OneOf('Employed', 'Student', 'Self-Employed')
     email_address = Email()
     children = Boolean()
     num_children = Integer(minvalue=0, maxvalue=25)
-    insurance = defaultdict(list)
 
     def __init__(self, **kwargs):
         """Validates and initialises the questionnaire data."""

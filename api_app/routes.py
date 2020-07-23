@@ -1,14 +1,14 @@
 from flask import request, jsonify
-from api_app.validation import String, RegistrationError, LoginError, Email, PayloadError, validate_password
+from api_app.validation import RegistrationError, LoginError, PayloadError
 from api_app.models import User, Login
 from api_app.questionnaire import Questionnaire
-from flask_login import LoginManager, current_user, logout_user, login_required
+from flask_login import current_user, logout_user, login_required
 
 
 def register_routes(app):
     @app.route('/')
     def hello_world():
-        return 'Hello World!'
+        return 'Hello World! Please use a http-client like Postman or Insomnia to talk to the API.'
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():

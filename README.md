@@ -5,11 +5,11 @@ This is an insurance recommendation API. A user can register, login, logout, and
 ## API usage
 
 The app ist currenty hosted and accessible at ```http://insurance-agent.store```. It is hosted on a Heroku dyno, so it might take some time for startup at the first request.  
-**Important**: The connection is not SSL/TLS encrypted, so do not send any personal information or use passwords you use at other services. The endpoint is just for demonstration purposes.
+**Important**: The connection is not SSL/TLS encrypted, so do not send any personal information or passwords you use at other services. The endpoint is just for demonstration purposes.
 Also please understand that the API results are not an official consultation and just used for information purposes.
 
 ### Register
-POST request to ```http://insurance-agent.store/register``` with JSON-payload:
+POST to ```http://insurance-agent.store/register``` with JSON-payload:
 ```
 {
 	"username": <username>,
@@ -18,7 +18,7 @@ POST request to ```http://insurance-agent.store/register``` with JSON-payload:
 }
 ```
 ### Get a recommendation
-Post request to ```http://insurance-agent.store/recommendation``` with JSON-payload:
+POST to ```http://insurance-agent.store/recommendation``` with JSON-payload:
 ```
 {
   "first_name": <firstname>,

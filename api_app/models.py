@@ -1,9 +1,8 @@
-#from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from api_app.validation import RegistrationError, LoginError, Email, PayloadError, validate_password
-from api_app.validation import String as StringValidator
+from api_app.validation import String as StringValidator  # To prevent namespace collision with sqlalchemy String
 from unicodedata import normalize
-from flask_login import UserMixin, login_user, current_user
+from flask_login import UserMixin, login_user
 from sqlalchemy import Column, Integer, String
 from api_app.db import Base, db_session
 
