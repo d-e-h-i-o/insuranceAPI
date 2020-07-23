@@ -18,7 +18,7 @@ def register_routes(app):
             user.register()
         except (PayloadError, RegistrationError) as e:
             return e.json, 422
-        return 'Successfully registered and logged in.', 200
+        return 'Successfully registered and logged in.', 201
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():

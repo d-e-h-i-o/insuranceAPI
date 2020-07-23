@@ -2,14 +2,14 @@ def test_authentification_register(client):
     rv = client.post(
         "/register", json={"username": "test", "email": "test@test.com", "password": "password"}
     )
-    assert rv.status_code == 200
+    assert rv.status_code == 201
 
 
 def test_authentification_register_double(client):
     rv = client.post(
         "/register", json={"username": "test", "email": "test@test.com", "password": "password"}
     )
-    assert rv.status_code == 200
+    assert rv.status_code == 201
 
     rv = client.post(
         "/register", json={"username": "test", "email": "test@test.com", "password": "password"}
