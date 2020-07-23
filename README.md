@@ -23,8 +23,8 @@ Post request to ```http://insurance-agent.store/recommendation``` with JSON-payl
   "address": <address>,
   "occupation": <{Employed, Student, Self-employed}>,
   "email_address": <email>,
-	"children": <Boolean>,
-  "num_childre": <optional int>
+  "children": <Boolean>,
+  "num_children": >int> (optional)
 }
 ```
 ### Login/Logout
