@@ -59,7 +59,7 @@ The app also supports login (```{"username": <username>, "password": <password>}
 2. Run tests  
 ```python -m pytest tests/ --capture=tee-sys```  
 
-#Todo
+# Todo
 * Integrate JWT
 * Integrate Flask-Admin
 * Use mypy and type hints
