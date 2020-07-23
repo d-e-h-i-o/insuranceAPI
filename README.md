@@ -1,5 +1,5 @@
 # insuranceAPI
-This is an insurance recommendation API. A user can register, login, logout, and post questionaire data, for which you will get a set of insurance reccomendation as response.
+This is an insurance recommendation API. A user can register, login, logout, and post questionaire data, for which he will get a set of insurance reccomendation as response.
 
 ## API usage
 
@@ -21,7 +21,7 @@ Post request to ```http://insurance-agent.store/recommendation``` with JSON-payl
 {
   "first_name": <firstname>,
   "address": <address>,
-  "occupation": <{Employed, Student, Self-employed}>,
+  "occupation": <occupation>, (in {Employed, Student, Self-employed})
   "email_address": <email>,
   "children": <Boolean>,
   "num_children": >int> (optional)
