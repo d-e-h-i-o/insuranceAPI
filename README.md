@@ -37,21 +37,30 @@ The app also supports login (```{"username": <username>, "password": <password>}
 1. Clone repository  
 ```git clone https://github.com/d-e-h-i-o/insuranceAPI.git```  
 ```cd insuranceAPI/```
-2. Create virtual environment (Python 3 is required)  
-```python -m venv venv```
-3. Activate virtual environment 
-```source venv/bin/activate``` (on macOS)
+2. Create virtual environment  
+```python3 -m venv venv```
+3. Activate virtual environment   
+```source venv/bin/activate``` 
 4. Install requirements  
 ```pip install -r requirements.txt```
-5. Set environements variables 
-toto  
-6. Set up database  
-toto  
+5. Set environment variables  
+```export DATABASE_URL="postgresql:///insuranceapi_dev"```  
+```export APP_SETTINGS="config.DevelopmentConfig"```  
+```export FLASK_APP="api_app:create_app()"```  
+```export SECRET_KEY=<something_really_secret>```  
+6. Set up database   
+```createdb insuranceapi_dev```  
 7. Run app  
-todo  
+```flask run```  
 
 ## Run test suite
-1. Set up database  
-todo 
+1. Set up database   
+```createdb insuranceapi_test``` 
 2. Run tests  
-```python -m pytest tests/ --capture=tee-sys```
+```python -m pytest tests/ --capture=tee-sys```  
+
+#Todo
+* Integrate JWT
+* Integrate Flask-Admin
+* Use mypy and type hints
+* Use docker
