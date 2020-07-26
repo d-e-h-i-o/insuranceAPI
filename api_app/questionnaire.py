@@ -1,5 +1,5 @@
-from api_app.validation import OneOf, String, Boolean, Email, Integer, PayloadError
 from flask import jsonify
+from api_app.validation import OneOf, String, Boolean, Email, Integer, PayloadError
 
 
 class Questionnaire:

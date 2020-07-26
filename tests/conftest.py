@@ -1,3 +1,4 @@
+"""Setup for pytest."""
 import pytest
 from api_app import create_app
 from api_app.user import User

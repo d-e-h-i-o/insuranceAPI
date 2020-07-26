@@ -1,3 +1,4 @@
+""" This module handles routing and structures the high-level application logic."""
 from flask import request, jsonify
 from api_app.validation import RegistrationError, LoginError, PayloadError
 from api_app.user import User

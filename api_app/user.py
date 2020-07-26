@@ -1,10 +1,11 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+"""The User class both validates the registration payload (with the validation class) and is an interface to the DB."""
+from unicodedata import normalize
+from api_app.db import Base, db_session
 from api_app.validation import RegistrationError, Email, PayloadError, validate_password
 from api_app.validation import String as StringValidator  # To prevent namespace collision with sqlalchemy String
-from unicodedata import normalize
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, current_user
 from sqlalchemy import Column, Integer, String
-from api_app.db import Base, db_session
 
 
 class User(UserMixin, Base):

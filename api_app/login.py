@@ -1,3 +1,4 @@
+"""Handles the login, mainly with help of the flask_login libaray."""
 from unicodedata import normalize
 from flask import jsonify
 from api_app.validation import LoginError, PayloadError, validate_password
