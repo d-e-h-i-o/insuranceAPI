@@ -6,7 +6,7 @@ def test_base(client):
                     "email": "test.mustermann@gmail.com"}
     rv1 = client.post('/register', json=registration)
     rv2 = client.post('/register', json=registration)
-    assert b'Successfully registered and logged in.' == rv1.data
+    assert b'"Successfully registered and logged in."\n' == rv1.data
     assert b'{"error":"Username is already taken."}\n' == rv2.data
 
 
@@ -16,7 +16,7 @@ def test_get_recommendation(client, auth):
                     "password": "something",
                     "email": "test.mustermann@gmail.com"}
     rv1 = client.post('/register', json=registration)
-    assert rv1.data == b'Successfully registered and logged in.'
+    assert rv1.data == b'"Successfully registered and logged in."\n'
     auth.login()
 
 
