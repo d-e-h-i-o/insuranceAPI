@@ -15,7 +15,7 @@ def init_engine(uri, **kwargs):
 
 
 def init_db(app):
-    from api_app import models
+    from api_app import user
     Base.metadata.create_all(bind=engine)
 
     @app.teardown_appcontext

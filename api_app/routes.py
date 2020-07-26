@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from api_app.validation import RegistrationError, LoginError, PayloadError
-from api_app.models import User, Login
+from api_app.user import User
+from api_app.login import Login
 from api_app.questionnaire import Questionnaire
 from flask_login import current_user, logout_user, login_required
 

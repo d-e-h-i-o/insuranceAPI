@@ -1,6 +1,6 @@
 import pytest
 from api_app import create_app
-from api_app.models import User
+from api_app.user import User
 
 
 @pytest.fixture()

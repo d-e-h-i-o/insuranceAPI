@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from api_app.validation import RegistrationError, LoginError, Email, PayloadError, validate_password
+from api_app.validation import RegistrationError, Email, PayloadError, validate_password
 from api_app.validation import String as StringValidator  # To prevent namespace collision with sqlalchemy String
 from unicodedata import normalize
 from flask_login import UserMixin, login_user
@@ -103,40 +103,3 @@ class User(UserMixin, Base):
         login_user(self)
 
 
-class Login:
-    """Logs-in a registered user."""
-    username = StringValidator(minsize=1, maxsize=64)
-
-    def __init__(self, **kwargs):
-        """
-        Login object
-            1) validates login payload
-            2) checks if user exists
-            3) checks password
-        """
-
-        '1) validate login payload'
-        if not kwargs:
-            raise PayloadError('''Invalid data. Must be of type "application/json" and contain the following fields:
-                                "username": String
-                                "password": String
-                                ''')
-        try:
-            self.username = kwargs.get('username')
-            validate_password(kwargs.get('password', None))
-        except ValueError as e:
-            raise PayloadError(str(e))
-
-        self.normalised_username = normalize('NFC', self.username)
-
-        '2) check if user exists and 3) check password'
-        self.authenticate(kwargs['password'])
-
-    def authenticate(self, password):
-        """Helper functions that queries the database for the user and checks the password."""
-        user = db_session.query(User).filter_by(username=self.normalised_username).first()
-        if user is None:
-            raise LoginError('User is not registered.')
-        if not user.check_password(password):
-            raise LoginError('Wrong password.')
-        login_user(user)
