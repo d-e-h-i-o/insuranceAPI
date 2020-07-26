@@ -10,6 +10,7 @@ class Config(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     DATABASE = os.environ['DATABASE_URL']
 
+
 class ProductionConfig(Config):
     DEBUG = False
 

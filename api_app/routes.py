@@ -16,9 +16,9 @@ def register_routes(app):
         try:
             user = User(**(request.json or {}))
             user.register()
-        except (PayloadError, RegistrationError) as e:
-            return e.json, 422
-        return 'Successfully registered and logged in.', 201
+        except (PayloadError, RegistrationError) as error:
+            return error.as_json, 422
+        return jsonify('Successfully registered and logged in.'), 201
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -27,9 +27,9 @@ def register_routes(app):
             return 'Already logged in.', 200
         try:
             Login(**(request.json or {}))
-        except (PayloadError, LoginError) as e:
-            return e.json, 422
-        return 'Successfully logged in.', 200
+        except (PayloadError, LoginError) as error:
+            return error.as_json, 422
+        return jsonify('Successfully logged in.'), 200
 
     @app.route('/logout')
     def logout():
@@ -43,8 +43,8 @@ def register_routes(app):
         """Returns a insurance recommendation for the posted data."""
         try:
             questionnaire = Questionnaire(**(request.json or {}))
-        except PayloadError as e:
-            return e.json, 422
+        except PayloadError as error:
+            return error.as_json, 422
         return questionnaire.recommendation(), 200
 
     return app

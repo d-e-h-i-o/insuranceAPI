@@ -8,7 +8,7 @@ from flask import jsonify
 class CustomError(Exception):
 
     @property
-    def json(self):
+    def as_json(self):
         return jsonify({'error': ' '.join([line.strip() for line in self.args[0].splitlines()])})
 
 
