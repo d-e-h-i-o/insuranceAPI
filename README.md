@@ -1,7 +1,7 @@
 # insuranceAPI  
 ![image](assets/contract_picture.jpg)  
 
-This is an insurance recommendation API. A user can register, login, logout, and post questionaire data for which he will get a set of insurance recomendation as response.
+This is an insurance recommendation API. A user can register, login, logout, and post questionnaire data for which he will get a set of insurance recomendation as response.
 ## API usage
 
 The app ist currenty hosted and accessible at ```http://insurance-agent.store```. It is hosted on a Heroku dyno, so it might take some time for startup at the first request.
