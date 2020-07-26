@@ -33,8 +33,11 @@ class Questionnaire:
         except ValueError as e:
             raise PayloadError(str(e))
 
-        if self.children is True and self.num_children == 0:
+        if self.children and self.num_children == 0:
             raise PayloadError('Please specify the number of children.')
+
+        if not self.children and self.num_children > 0:
+            raise PayloadError('Can\'t set children to false and specifiy a number of children')
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.first_name!r}, {self.address!r}, {self.occupation!r})'

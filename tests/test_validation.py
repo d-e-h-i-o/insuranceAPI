@@ -134,3 +134,16 @@ def test_validation_recommendation_children2(client, auth):
     }
     rv = client.post('/recommendation', json=payload)
     assert rv.status_code == 422
+
+def test_validation_recommendation_children3(client, auth):
+    auth.register()
+    payload = {
+        "first_name": "Niklas",
+        "address": "Some street",
+        "occupation": "Student",
+        "email_address": "test@testcase.com",
+        "children": False,
+        "children": 5
+    }
+    rv = client.post('/recommendation', json=payload)
+    assert rv.status_code == 422
