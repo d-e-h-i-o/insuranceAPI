@@ -14,6 +14,10 @@ def init_engine(uri, **kwargs):
     return engine
 
 
-def init_db():
+def init_db(app):
     from api_app import models
     Base.metadata.create_all(bind=engine)
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db_session.remove()

@@ -8,9 +8,7 @@ import os
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY='dev'
-    )
+    app.config.from_mapping(SECRET_KEY=os.environ['SECRET_KEY'])
 
     if test_config is None:
         app.config.from_pyfile('../config.py')
@@ -20,7 +18,7 @@ def create_app(test_config=None):
 
     with app.app_context():
         init_engine(app.config['DATABASE'])
-        init_db()
+        init_db(app)
 
     from api_app.db import db_session
     from api_app.routes import register_routes
@@ -28,15 +26,10 @@ def create_app(test_config=None):
     app = register_routes(app)
     app = login_handler(app)
 
-    @app.teardown_appcontext
-    def shutdown_session(exception=None):
-        db_session.remove()
-
     return app
 
 
 def login_handler(app):
-
     from api_app.models import User
 
     login_manager = LoginManager(app)
