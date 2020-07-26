@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api_app.validation import RegistrationError, Email, PayloadError, validate_password
 from api_app.validation import String as StringValidator  # To prevent namespace collision with sqlalchemy String
 from unicodedata import normalize
-from flask_login import UserMixin, login_user
+from flask_login import UserMixin, login_user, current_user
 from sqlalchemy import Column, Integer, String
 from api_app.db import Base, db_session
 
@@ -16,6 +16,7 @@ class User(UserMixin, Base):
     email = Column(String(64), index=True, unique=True)
     password_hash = Column(String(128))
 
+    'Not as elegant as in questionnaire, but I do not know how to use both db.Column and the validations classes.'
     _username = StringValidator(minsize=1, maxsize=64)
     _email = Email()
 
@@ -31,8 +32,8 @@ class User(UserMixin, Base):
         """
 
         '1) is user already logged in?'
-        #if current_user.is_authenticated:
-            #raise RegistrationError("Already authenticated.")
+        if current_user.is_authenticated:
+            raise RegistrationError("Already authenticated.")
 
         '2) parameter validation:'
         self.validate_payload(**kwargs)
@@ -56,8 +57,7 @@ class User(UserMixin, Base):
 
     def validate_payload(self, **kwargs):
         """
-        Validates the payload. Not as elegant as in questionnaire, but I do not know how to use both db.Column
-        and the validations classes.
+        Validates the payload.
         """
 
         if not kwargs:
@@ -87,12 +87,6 @@ class User(UserMixin, Base):
                 raise RegistrationError("Username is already taken.")
             if session.query(User).filter_by(email=self.email).first() is not None:
                 raise RegistrationError("Email is already registered.")
-            '''
-            if User.query.filter_by(username=self.username).first() is not None:
-                raise RegistrationError("Username is already taken.")
-            if User.query.filter_by(email=self.email).first() is not None:
-                raise RegistrationError("Email is already registered.")
-            '''
         except ValueError as e:
             raise RegistrationError(str(e))
 

@@ -1,10 +1,10 @@
+from unicodedata import normalize
+from flask import jsonify
 from api_app.validation import LoginError, PayloadError, validate_password
 from api_app.validation import String
-from unicodedata import normalize
-from flask_login import login_user
+from api_app.user import User
 from api_app.db import db_session
-from flask_login import LoginManager
-from flask import jsonify
+from flask_login import LoginManager, login_user, current_user
 
 
 class Login:
@@ -18,6 +18,10 @@ class Login:
             2) checks if user exists
             3) checks password
         """
+
+        '1) check if current user is already logged in'
+        if current_user.is_authenticated:
+            raise LoginError('Already logged in.')
 
         '1) validate login payload'
         if not kwargs:

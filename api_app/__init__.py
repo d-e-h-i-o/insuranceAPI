@@ -1,7 +1,7 @@
+import os
 from flask import Flask
 from api_app.db import init_db, init_engine, db_session
 from api_app.validation import RegistrationError, LoginError, PayloadError
-import os
 
 
 def create_app(test_config=None):

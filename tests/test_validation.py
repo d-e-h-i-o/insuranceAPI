@@ -1,15 +1,4 @@
 
-
-def test_base(client):
-    registration = {"username": "Niklas35",
-                    "password": "something",
-                    "email": "test.mustermann@gmail.com"}
-    rv1 = client.post('/register', json=registration)
-    rv2 = client.post('/register', json=registration)
-    assert b'"Successfully registered and logged in."\n' == rv1.data
-    assert b'{"error":"Username is already taken."}\n' == rv2.data
-
-
 def test_get_recommendation(client, auth):
     auth.login()
     registration = {"username": "Niklas35",
@@ -17,7 +6,6 @@ def test_get_recommendation(client, auth):
                     "email": "test.mustermann@gmail.com"}
     rv1 = client.post('/register', json=registration)
     assert rv1.data == b'"Successfully registered and logged in."\n'
-    auth.login()
 
 
 def test_validation_recommendation_empty(client, auth):

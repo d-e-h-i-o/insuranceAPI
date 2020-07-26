@@ -3,7 +3,7 @@ from api_app.validation import RegistrationError, LoginError, PayloadError
 from api_app.user import User
 from api_app.login import Login
 from api_app.questionnaire import Questionnaire
-from flask_login import current_user, logout_user, login_required
+from flask_login import logout_user, login_required
 
 
 def register_routes(app):
@@ -24,8 +24,6 @@ def register_routes(app):
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         """Login existing user."""
-        if current_user.is_authenticated:
-            return 'Already logged in.', 200
         try:
             Login(**(request.json or {}))
         except (PayloadError, LoginError) as error:
